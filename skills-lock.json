@@ -152,7 +152,7 @@
       "computedHash": "57e9caf75215ba4f748fd5a255d08ef8170fe1f5c9733c8f7f11466b1170cb49"
     },
     "dynatrace-kpi-dashboard-generator": {
-      "source": "SudoSmitty/dynatrace-kpi-dashboard-generator",
+      "source": "dynatrace-wwse/demo-business-kpi-dashboard-generator",
       "sourceType": "github",
       "skillPath": "skills/dynatrace-kpi-dashboard-generator/SKILL.md",
       "computedHash": "90bb0316681dc89d2c158504699aef1f8904501f24c09533e273bfc79f764d21"
