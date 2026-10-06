@@ -157,6 +157,12 @@
       "skillPath": "skills/dynatrace-kpi-dashboard-generator/SKILL.md",
       "computedHash": "90bb0316681dc89d2c158504699aef1f8904501f24c09533e273bfc79f764d21"
     },
+    "dynatrace-metric-device-dashboard-generator": {
+      "source": "dynatrace-wwse/demo-metric-device-dashboard-generator",
+      "sourceType": "github",
+      "skillPath": "skills/dynatrace-metric-device-dashboard-generator/SKILL.md",
+      "computedHash": "9ac1fa64a8292a414fc2727ed60d59b9fbade7b92b28f3db45a5e73815c9af37"
+    },
     "pr-review": {
       "source": "dynatrace-oss/dtctl",
       "sourceType": "github",
