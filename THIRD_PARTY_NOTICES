@@ -64,7 +64,7 @@ required by section 4(d) of the Apache License, Version 2.0:
 
 Skill:   dynatrace-kpi-dashboard-generator
 
-Source:  https://github.com/SudoSmitty/dynatrace-kpi-dashboard-generator
+Source:  https://github.com/dynatrace-wwse/demo-business-kpi-dashboard-generator
 License: No license file published upstream. Redistributed here with the
          author's permission.
 

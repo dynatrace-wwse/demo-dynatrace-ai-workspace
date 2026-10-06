@@ -50,7 +50,7 @@ For dtctl operations add the scopes relevant to what you need (workflows, dashbo
 | Skill | Source |
 |---|---|
 | `dt-dql-essentials`, `dt-obs-*`, `dt-alerting`, `dt-sec-insights`, `dt-app-*`, `dt-platform-costs`, `dt-migration`, `dt-js-runtime` | [Dynatrace/dynatrace-for-ai](https://github.com/Dynatrace/dynatrace-for-ai) |
-| `dynatrace-kpi-dashboard-generator` | [SudoSmitty/dynatrace-kpi-dashboard-generator](https://github.com/SudoSmitty/dynatrace-kpi-dashboard-generator) |
+| `dynatrace-kpi-dashboard-generator` | [dynatrace-wwse/demo-business-kpi-dashboard-generator](https://github.com/dynatrace-wwse/demo-business-kpi-dashboard-generator) |
 | `dtctl` | [dynatrace-oss/dtctl](https://github.com/dynatrace-oss/dtctl) (installed on first start) |
 
 To update skills: `npx skills update`
@@ -68,7 +68,7 @@ is tracked in [`skills-lock.json`](skills-lock.json).
 |---|---|---|
 | `dt-*` (`dt-dql-essentials`, `dt-obs-*`, `dt-alerting`, `dt-sec-insights`, `dt-app-*`, `dt-platform-costs`, `dt-migration`, `dt-js-runtime`) | [Dynatrace/dynatrace-for-ai](https://github.com/Dynatrace/dynatrace-for-ai) | Apache-2.0 |
 | `dtctl`, `dtctl-release`, `pr-review` | [dynatrace-oss/dtctl](https://github.com/dynatrace-oss/dtctl) | Apache-2.0 |
-| `dynatrace-kpi-dashboard-generator` | [SudoSmitty/dynatrace-kpi-dashboard-generator](https://github.com/SudoSmitty/dynatrace-kpi-dashboard-generator) | No upstream license — included with the author's permission |
+| `dynatrace-kpi-dashboard-generator` | [dynatrace-wwse/demo-business-kpi-dashboard-generator](https://github.com/dynatrace-wwse/demo-business-kpi-dashboard-generator) | No upstream license — included with the author's permission |
 
 > **`dynatrace-kpi-dashboard-generator`** has no license file in its upstream
 > repository and is redistributed here with the express permission of its
