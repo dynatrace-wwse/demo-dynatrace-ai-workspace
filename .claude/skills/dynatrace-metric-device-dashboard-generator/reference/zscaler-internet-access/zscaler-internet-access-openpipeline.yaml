@@ -1,0 +1,35 @@
+schemaid: builtin:openpipeline.bizevents.pipelines
+scope: environment
+value:
+  customId: zscaler-zia-topology
+  displayName: Zscaler ZIA Topology Extractor
+  metadataList: []
+  smartscapeNodeExtraction:
+    processors:
+      - description: Create CUSTOM_ZIA_NODE Smartscape entities from zia.tunnel.health events
+        enabled: true
+        id: extract-zia-node
+        matcher: event.type == "zia.tunnel.health"
+        smartscapeNode:
+          extractNode: true
+          fieldsToExtract:
+            - fieldName: site
+              referencedFieldName: site
+            - fieldName: pop_region
+              referencedFieldName: pop_region
+            - fieldName: tunnel_latency_ms
+              referencedFieldName: tunnel_latency_ms
+            - fieldName: packet_loss_pct
+              referencedFieldName: packet_loss_pct
+          idComponents:
+            - idComponent: zia-node
+              referencedFieldName: zia_node
+          nodeIdFieldName: dt.entity.custom_zia_node
+          nodeName:
+            field:
+              defaultValue: Unknown ZIA Node
+              sourceFieldName: zia_node
+            type: field
+          nodeType: CUSTOM_ZIA_NODE
+          staticEdgesToExtract: []
+        type: smartscapeNode

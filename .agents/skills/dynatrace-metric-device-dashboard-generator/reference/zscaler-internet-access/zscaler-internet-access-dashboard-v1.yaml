@@ -1,0 +1,631 @@
+id: 6484dc84-ee19-4a7d-8787-dc66337b1463
+name: Zscaler Internet Access | Operations Dashboard
+type: dashboard
+content:
+  version: 21
+  variables:
+    - version: 2
+      key: Site
+      type: query
+      visible: true
+      editable: true
+      multiple: true
+      defaultSelectAll: true
+      input: |
+        fetch bizevents
+        | filter event.provider == "zscaler.zia.event.provider"
+        | fields site
+  tiles:
+    "0":
+      type: markdown
+      content: |
+        ![Zscaler Logo](https://ml.globenewswire.com/media/bcd2d61e-e35a-4ecb-90e0-bd8d1194fd0d/small/zscaler-logo-tm-blue-rgb-20dec2016-jpg.jpg)
+    "1":
+      type: markdown
+      content: |
+        # Zscaler Internet Access | Operations Dashboard
+
+        Real-time KPI monitoring for tunnel health, policy enforcement, threat activity, DNS, and user experience.
+    "2":
+      type: data
+      title: EXECUTIVE SUMMARY
+      query: data record(section="Executive Summary")
+      visualization: singleValue
+      visualizationSettings:
+        singleValue:
+          labelMode: none
+          isIconVisible: true
+          prefixIcon: GridIcon
+          colorThresholdTarget: background
+        thresholds:
+          - id: 1
+            field: section
+            title: ""
+            isEnabled: true
+            rules:
+              - id: 1
+                color: "#1E90FF"
+                comparator: "!="
+                label: ""
+                value: "1"
+    "3":
+      type: data
+      title: Tunnel Availability (%) - $Site
+      query: |
+        fetch bizevents
+        | filter event.provider == "zscaler.zia.event.provider" and event.type == "zia.tunnel.health" and in(site, $Site)
+        | summarize ok = countIf(outcome == "ok"), total = count()
+        | fieldsAdd availability_pct = if(total == 0, 0.0, else: (toDouble(ok) / toDouble(total)) * 100.0)
+      visualization: singleValue
+      visualizationSettings:
+        autoSelectVisualization: false
+        singleValue:
+          recordField: availability_pct
+          colorThresholdTarget: background
+        thresholds:
+          - id: 1
+            field: availability_pct
+            title: ""
+            isEnabled: true
+            rules:
+              - id: 1
+                color:
+                  Default: "#c62239"
+                comparator: "<"
+                label: "Critical"
+                value: 98
+              - id: 2
+                color:
+                  Default: "#eea53c"
+                comparator: "<"
+                label: "Warning"
+                value: 99.5
+              - id: 3
+                color:
+                  Default: "#2a7452"
+                comparator: "≥"
+                label: "Good"
+                value: 99.5
+        unitsOverrides:
+          - identifier: availability_pct
+            unitCategory: percent
+            baseUnit: percent
+            decimals: 2
+    "4":
+      type: data
+      title: Blocked Policy Decisions - $Site
+      query: |
+        fetch bizevents
+        | filter event.provider == "zscaler.zia.event.provider" and event.type == "zia.policy.decision" and in(site, $Site)
+        | summarize blocked = countIf(policy_action == "block")
+      visualization: singleValue
+      visualizationSettings:
+        autoSelectVisualization: false
+        singleValue:
+          recordField: blocked
+          colorThresholdTarget: background
+        unitsOverrides:
+          - identifier: blocked
+            unitCategory: unspecified
+            baseUnit: count
+            decimals: 0
+    "5":
+      type: data
+      title: Critical+High Threats - $Site
+      query: |
+        fetch bizevents
+        | filter event.provider == "zscaler.zia.event.provider" and event.type == "zia.security.threat" and in(site, $Site)
+        | summarize threats = countIf(threat_severity == "critical" or threat_severity == "high")
+      visualization: singleValue
+      visualizationSettings:
+        autoSelectVisualization: false
+        singleValue:
+          recordField: threats
+          colorThresholdTarget: background
+        thresholds:
+          - id: 1
+            field: threats
+            title: ""
+            isEnabled: true
+            rules:
+              - id: 1
+                color:
+                  Default: "#2a7452"
+                comparator: "≥"
+                label: "Good"
+                value: 0
+              - id: 2
+                color:
+                  Default: "#eea53c"
+                comparator: "≥"
+                label: "Warning"
+                value: 30
+              - id: 3
+                color:
+                  Default: "#c62239"
+                comparator: "≥"
+                label: "Critical"
+                value: 60
+        unitsOverrides:
+          - identifier: threats
+            unitCategory: unspecified
+            baseUnit: count
+            decimals: 0
+    "6":
+      type: data
+      title: Avg Tunnel Latency (ms) - $Site
+      query: |
+        fetch bizevents
+        | filter event.provider == "zscaler.zia.event.provider" and event.type == "zia.tunnel.health" and in(site, $Site)
+        | summarize latency_ms = avg(tunnel_latency_ms)
+      visualization: singleValue
+      visualizationSettings:
+        autoSelectVisualization: false
+        singleValue:
+          recordField: latency_ms
+          colorThresholdTarget: background
+        thresholds:
+          - id: 1
+            field: latency_ms
+            title: ""
+            isEnabled: true
+            rules:
+              - id: 1
+                color:
+                  Default: "#2a7452"
+                comparator: "≥"
+                label: "Good"
+                value: 0
+              - id: 2
+                color:
+                  Default: "#eea53c"
+                comparator: "≥"
+                label: "Warning"
+                value: 80
+              - id: 3
+                color:
+                  Default: "#c62239"
+                comparator: "≥"
+                label: "Critical"
+                value: 140
+        unitsOverrides:
+          - identifier: latency_ms
+            unitCategory: time
+            baseUnit: millisecond
+            decimals: 1
+    "7":
+      type: data
+      title: Avg Throughput (Mbps) - $Site
+      query: |
+        fetch bizevents
+        | filter event.provider == "zscaler.zia.event.provider" and event.type == "zia.web.transaction" and in(site, $Site)
+        | summarize throughput_mbps = avg(throughput_mbps)
+      visualization: singleValue
+      visualizationSettings:
+        autoSelectVisualization: false
+        singleValue:
+          recordField: throughput_mbps
+          colorThresholdTarget: background
+        thresholds:
+          - id: 1
+            field: throughput_mbps
+            title: ""
+            isEnabled: true
+            rules:
+              - id: 1
+                color:
+                  Default: "#c62239"
+                comparator: "≥"
+                label: "Critical"
+                value: 0
+              - id: 2
+                color:
+                  Default: "#eea53c"
+                comparator: "≥"
+                label: "Warning"
+                value: 700
+              - id: 3
+                color:
+                  Default: "#2a7452"
+                comparator: "≥"
+                label: "Good"
+                value: 1300
+        unitsOverrides:
+          - identifier: throughput_mbps
+            unitCategory: unspecified
+            baseUnit: count
+            decimals: 2
+    "8":
+      type: data
+      title: Avg Packet Loss (%) - $Site
+      query: |
+        fetch bizevents
+        | filter event.provider == "zscaler.zia.event.provider" and event.type == "zia.tunnel.health" and in(site, $Site)
+        | summarize packet_loss_pct = avg(packet_loss_pct)
+      visualization: singleValue
+      visualizationSettings:
+        autoSelectVisualization: false
+        singleValue:
+          recordField: packet_loss_pct
+          colorThresholdTarget: background
+        thresholds:
+          - id: 1
+            field: packet_loss_pct
+            title: ""
+            isEnabled: true
+            rules:
+              - id: 1
+                color:
+                  Default: "#2a7452"
+                comparator: "≥"
+                label: "Good"
+                value: 0
+              - id: 2
+                color:
+                  Default: "#eea53c"
+                comparator: "≥"
+                label: "Warning"
+                value: 1.2
+              - id: 3
+                color:
+                  Default: "#c62239"
+                comparator: "≥"
+                label: "Critical"
+                value: 2.2
+        unitsOverrides:
+          - identifier: packet_loss_pct
+            unitCategory: percent
+            baseUnit: percent
+            decimals: 2
+    "9":
+      type: data
+      title: Avg DNS Lookup (ms) - $Site
+      query: |
+        fetch bizevents
+        | filter event.provider == "zscaler.zia.event.provider" and event.type == "zia.dns.lookup" and in(site, $Site)
+        | summarize dns_lookup_ms = avg(dns_lookup_ms)
+      visualization: singleValue
+      visualizationSettings:
+        autoSelectVisualization: false
+        singleValue:
+          recordField: dns_lookup_ms
+          colorThresholdTarget: background
+        thresholds:
+          - id: 1
+            field: dns_lookup_ms
+            title: ""
+            isEnabled: true
+            rules:
+              - id: 1
+                color:
+                  Default: "#2a7452"
+                comparator: "≥"
+                label: "Good"
+                value: 0
+              - id: 2
+                color:
+                  Default: "#eea53c"
+                comparator: "≥"
+                label: "Warning"
+                value: 100
+              - id: 3
+                color:
+                  Default: "#c62239"
+                comparator: "≥"
+                label: "Critical"
+                value: 180
+        unitsOverrides:
+          - identifier: dns_lookup_ms
+            unitCategory: time
+            baseUnit: millisecond
+            decimals: 1
+    "10":
+      type: data
+      title: Avg User Experience Score - $Site
+      query: |
+        fetch bizevents
+        | filter event.provider == "zscaler.zia.event.provider" and event.type == "zia.user.experience" and in(site, $Site)
+        | summarize ues = avg(user_experience_score)
+      visualization: singleValue
+      visualizationSettings:
+        autoSelectVisualization: false
+        singleValue:
+          recordField: ues
+          colorThresholdTarget: background
+        thresholds:
+          - id: 1
+            field: ues
+            title: ""
+            isEnabled: true
+            rules:
+              - id: 1
+                color:
+                  Default: "#c62239"
+                comparator: "≥"
+                label: "Critical"
+                value: 0
+              - id: 2
+                color:
+                  Default: "#eea53c"
+                comparator: "≥"
+                label: "Warning"
+                value: 72
+              - id: 3
+                color:
+                  Default: "#2a7452"
+                comparator: "≥"
+                label: "Good"
+                value: 85
+        unitsOverrides:
+          - identifier: ues
+            unitCategory: unspecified
+            baseUnit: count
+            decimals: 1
+    "11":
+      type: data
+      title: GLOBAL ACCESS MAP
+      query: |
+        fetch bizevents
+        | filter event.provider == "zscaler.zia.event.provider" and event.type == "zia.tunnel.health"
+        | parse geo, "JSON:obj"
+        | fieldsAdd lat = coalesce(`geo.location.latitude`, toDouble(obj[location][latitude])), lon = coalesce(`geo.location.longitude`, toDouble(obj[location][longitude]))
+        | filter isNotNull(lat) and isNotNull(lon)
+        | fieldsAdd `geo.location.latitude` = lat, `geo.location.longitude` = lon
+        | summarize sessions = count(), by:{site, `geo.location.latitude`, `geo.location.longitude`}
+      visualization: bubbleMap
+      visualizationSettings:
+        mapSettings:
+          mapType: roadmap
+          regions:
+            showRegions: false
+    "12":
+      type: data
+      title: SERVICE HEALTH TRENDS
+      query: data record(section="Service Health Trends")
+      visualization: singleValue
+      visualizationSettings:
+        singleValue:
+          labelMode: none
+          isIconVisible: true
+          prefixIcon: HealthCheckIcon
+          colorThresholdTarget: background
+        thresholds:
+          - id: 1
+            field: section
+            title: ""
+            isEnabled: true
+            rules:
+              - id: 1
+                color: "#2980B9"
+                comparator: "!="
+                label: ""
+                value: "1"
+    "13":
+      type: data
+      title: Tunnel Latency p95 by Site - $Site
+      query: |
+        fetch bizevents
+        | filter event.provider == "zscaler.zia.event.provider" and event.type == "zia.tunnel.health" and in(site, $Site)
+        | makeTimeseries p95_latency = percentile(tunnel_latency_ms, 95), by:{site}, interval:5m
+      visualization: lineChart
+      visualizationSettings: {}
+    "14":
+      type: data
+      title: Policy Decision Split - $Site
+      query: |
+        fetch bizevents
+        | filter event.provider == "zscaler.zia.event.provider" and event.type == "zia.policy.decision" and in(site, $Site)
+        | summarize decisions = count(), by:{policy_action}
+      visualization: donutChart
+      visualizationSettings: {}
+    "15":
+      type: data
+      title: Threat Severity Trend - $Site
+      query: |
+        fetch bizevents
+        | filter event.provider == "zscaler.zia.event.provider" and event.type == "zia.security.threat" and in(site, $Site)
+        | makeTimeseries threats = count(), by:{threat_severity}, interval:5m
+      visualization: areaChart
+      visualizationSettings: {}
+    "16":
+      type: data
+      title: DNS & Packet Health - $Site
+      query: |
+        fetch bizevents
+        | filter event.provider == "zscaler.zia.event.provider" and in(site, $Site)
+        | fieldsAdd dns = if(event.type == "zia.dns.lookup", dns_lookup_ms, else: null), pl = if(event.type == "zia.tunnel.health", packet_loss_pct, else: null)
+        | makeTimeseries avg_dns_ms = avg(dns), avg_packet_loss_pct = avg(pl), interval:5m
+      visualization: lineChart
+      visualizationSettings: {}
+    "17":
+      type: data
+      title: SYNTHETIC ZIA LOGS
+      query: data record(section="Synthetic ZIA Logs")
+      visualization: singleValue
+      visualizationSettings:
+        singleValue:
+          labelMode: none
+          isIconVisible: true
+          prefixIcon: DocumentIcon
+          colorThresholdTarget: background
+        thresholds:
+          - id: 1
+            field: section
+            title: ""
+            isEnabled: true
+            rules:
+              - id: 1
+                color: "#2980B9"
+                comparator: "!="
+                label: ""
+                value: "1"
+    "18":
+      type: data
+      title: ZIA Log Error Rate - $Site
+      query: |
+        fetch logs
+        | filter log.source == "zscaler.zia.synthetic" and in(site, $Site)
+        | summarize errors = countIf(loglevel == "ERROR"), total = count()
+        | fieldsAdd error_rate_pct = if(total == 0, 0.0, else: (toDouble(errors) / toDouble(total)) * 100.0)
+      visualization: singleValue
+      visualizationSettings:
+        autoSelectVisualization: false
+        singleValue:
+          recordField: error_rate_pct
+          colorThresholdTarget: background
+        thresholds:
+          - id: 1
+            field: error_rate_pct
+            title: ""
+            isEnabled: true
+            rules:
+              - id: 1
+                color:
+                  Default: "#2a7452"
+                comparator: "<"
+                label: "Good"
+                value: 2
+              - id: 2
+                color:
+                  Default: "#eea53c"
+                comparator: "<"
+                label: "Warning"
+                value: 5
+              - id: 3
+                color:
+                  Default: "#c62239"
+                comparator: "≥"
+                label: "Critical"
+                value: 5
+        unitsOverrides:
+          - identifier: error_rate_pct
+            unitCategory: percent
+            baseUnit: percent
+            decimals: 2
+    "19":
+      type: data
+      title: Log Threat Score Distribution - $Site
+      query: |
+        fetch logs
+        | filter log.source == "zscaler.zia.synthetic" and in(site, $Site)
+        | fieldsAdd threat_band = if(threat_score >= 80, "High", else: if(threat_score >= 50, "Medium", else: "Low"))
+        | summarize logs = count(), by:{threat_band}
+      visualization: donutChart
+      visualizationSettings: {}
+    "20":
+      type: data
+      title: Noisiest ZIA Log Sites - $Site
+      query: |
+        fetch logs
+        | filter log.source == "zscaler.zia.synthetic" and in(site, $Site)
+        | summarize logs = count(), by:{site}
+        | sort logs desc
+        | limit 10
+      visualization: categoricalBar
+      visualizationSettings: {}
+  layouts:
+    "0":
+      x: 0
+      "y": 0
+      w: 6
+      h: 2
+    "1":
+      x: 6
+      "y": 0
+      w: 18
+      h: 2
+    "11":
+      x: 0
+      "y": 2
+      w: 24
+      h: 8
+    "2":
+      x: 0
+      "y": 10
+      w: 24
+      h: 1
+    "3":
+      x: 0
+      "y": 11
+      w: 4
+      h: 2
+    "4":
+      x: 4
+      "y": 11
+      w: 4
+      h: 2
+    "5":
+      x: 8
+      "y": 11
+      w: 4
+      h: 2
+    "6":
+      x: 12
+      "y": 11
+      w: 4
+      h: 2
+    "7":
+      x: 16
+      "y": 11
+      w: 4
+      h: 2
+    "8":
+      x: 20
+      "y": 11
+      w: 4
+      h: 2
+    "9":
+      x: 0
+      "y": 13
+      w: 12
+      h: 2
+    "10":
+      x: 12
+      "y": 13
+      w: 12
+      h: 2
+    "12":
+      x: 0
+      "y": 15
+      w: 24
+      h: 1
+    "13":
+      x: 0
+      "y": 16
+      w: 12
+      h: 4
+    "14":
+      x: 12
+      "y": 16
+      w: 12
+      h: 4
+    "15":
+      x: 0
+      "y": 20
+      w: 12
+      h: 4
+    "16":
+      x: 12
+      "y": 20
+      w: 12
+      h: 4
+    "17":
+      x: 0
+      "y": 24
+      w: 24
+      h: 1
+    "18":
+      x: 0
+      "y": 25
+      w: 8
+      h: 4
+    "19":
+      x: 8
+      "y": 25
+      w: 8
+      h: 4
+    "20":
+      x: 16
+      "y": 25
+      w: 8
+      h: 4

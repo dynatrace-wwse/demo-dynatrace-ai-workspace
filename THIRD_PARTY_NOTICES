@@ -74,6 +74,25 @@ License: No license file published upstream. Redistributed here with the
     open-source license (e.g. Apache-2.0 or MIT) upstream.
 
 --------------------------------------------------------------------------------
+4. dynatrace-metric-device-dashboard-generator skill
+--------------------------------------------------------------------------------
+
+Skill:   dynatrace-metric-device-dashboard-generator
+
+Source:  https://github.com/dynatrace-wwse/demo-metric-device-dashboard-generator
+License: No license file published upstream (its plugin manifest declares
+         "MIT"). Redistributed here as published by the dynatrace-wwse
+         organization.
+
+    NOTE: The upstream repository does not publish a license file. For a
+    cleaner provenance trail, consider asking the maintainers to add an
+    explicit open-source license upstream.
+
+    The helper scripts in scripts/ and the /generate-metric-dashboard and
+    /cleanup-metric-dashboard slash commands are also taken from that
+    repository.
+
+--------------------------------------------------------------------------------
 
 Full text of the Apache License, Version 2.0 is available in the LICENSE file
 at the root of this repository and at http://www.apache.org/licenses/LICENSE-2.0
